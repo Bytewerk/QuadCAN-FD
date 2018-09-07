@@ -1,0 +1,65 @@
+/*
+ * Device tree overlay for mcp2517fd/can0 on spi0.0
+ */
+
+/dts-v1/;
+/plugin/;
+
+/ {
+    compatible = "brcm,bcm2835", "brcm,bcm2836", "brcm,bcm2708", "brcm,bcm2709";
+    /* disable spi-dev for spi0.1 */
+    fragment@0 {
+        target = <&spi0>;
+        __overlay__ {
+            status = "okay";
+        };
+    };
+
+    fragment@1 {
+		target = <&spidev0>;
+		__overlay__ {
+			status = "disabled";
+		};
+    };
+
+    /* the interrupt pin of the can-controller */
+    fragment@2 {
+        target = <&gpio>;
+        __overlay__ {
+            can0_pins: can0_pins {
+                brcm,pins = <2>;
+                brcm,function = <0>; /* input */
+            };
+        };
+    };
+
+    /* the clock/oscillator of the can-controller */
+    fragment@3 {
+        target-path = "/clocks";
+        __overlay__ {
+            mcp2517fd_osc: mcp2517fd_osc {
+                compatible = "fixed-clock";
+                #clock-cells = <0>;
+                clock-frequency  = <20000000>;
+            };
+        };
+    };
+
+    /* the spi config of the can-controller itself binding everything together */
+    fragment@4 {
+        target = <&spi0>;
+        __overlay__ {
+            /* needed to avoid dtc warning */
+            #address-cells = <1>;
+			#size-cells = <0>;
+            can0: can@0 {
+				compatible = "microchip,mcp2517fd";
+				reg = <0>;
+                clocks = <&mcp2517fd_osc>;
+				spi-max-frequency = <10000000>;
+				interrupt-parent = <&gpio>;
+				interrupts = <2 0x8>;
+            };
+        };
+    };
+};

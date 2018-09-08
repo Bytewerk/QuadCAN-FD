@@ -7,7 +7,8 @@
 
 / {
     compatible = "brcm,bcm2835", "brcm,bcm2836", "brcm,bcm2708", "brcm,bcm2709";
-    /* disable spi-dev for spi0.1 */
+
+    /* disable spi-dev for spi0 and spi1 */
     fragment@0 {
         target = <&spi0>;
         __overlay__ {
@@ -16,25 +17,39 @@
     };
 
     fragment@1 {
-		target = <&spidev0>;
-		__overlay__ {
-			status = "disabled";
-		};
+        target = <&spi1>;
+        __overlay__ {
+            status = "okay";
+        };
     };
 
-    /* the interrupt pin of the can-controller */
     fragment@2 {
+	target = <&spidev0>;
+	__overlay__ {
+            status = "disabled";
+	};
+    };
+ 
+    fragment@3 {
+        target = <&spidev1>;
+        __overlay__ {
+            status = "disabled";
+        };
+    };
+
+    /* MCP2517FD INT pins */
+    fragment@4 {
         target = <&gpio>;
         __overlay__ {
-            can0_pins: can0_pins {
-                brcm,pins = <2>;
+            can_pins: can_pins {
+                brcm,pins = <18 2 13 6>;
                 brcm,function = <0>; /* input */
             };
         };
     };
 
-    /* the clock/oscillator of the can-controller */
-    fragment@3 {
+    /* dedicated MCP2517FD clock @20MHz */
+    fragment@5 {
         target-path = "/clocks";
         __overlay__ {
             mcp2517fd_osc: mcp2517fd_osc {
@@ -45,21 +60,28 @@
         };
     };
 
-    /* the spi config of the can-controller itself binding everything together */
-    fragment@4 {
+    /* CAN0: SPI0 CE1, INT pin on GPIO18 */
+    /* CAN1: SPI0 CE0, INT pin on GPIO2 */
+    fragment@7 {
         target = <&spi0>;
         __overlay__ {
-            /* needed to avoid dtc warning */
-            #address-cells = <1>;
-			#size-cells = <0>;
             can0: can@0 {
-				compatible = "microchip,mcp2517fd";
-				reg = <0>;
+		compatible = "microchip,mcp2517fd";
+		reg = <1>;
                 clocks = <&mcp2517fd_osc>;
-				spi-max-frequency = <10000000>;
-				interrupt-parent = <&gpio>;
-				interrupts = <2 0x8>;
+		spi-max-frequency = <10000000>;
+		interrupt-parent = <&gpio>;
+		interrupts = <18 0x8>;
+            };
+            can1: can@1 {
+		compatible = "microchip,mcp2517fd";
+		reg = <0>;
+                clocks = <&mcp2517fd_osc>;
+		spi-max-frequency = <10000000>;
+		interrupt-parent = <&gpio>;
+		interrupts = <2 0x8>;
             };
         };
     };
+
 };

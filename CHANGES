@@ -1,0 +1,8 @@
+v2
+- remove INT0/INT1 wirings (kernel module doesn't use them)
+- fix SPI1_CS0 (move to BCM18, move MCP_INT0 to BCM4)
+- add pull-up resistors to CS pins
+- add HAT ID eeprom
+- add termination resistors
+- use INT0 as XSTBY, connect XSTBY <-> STB
+

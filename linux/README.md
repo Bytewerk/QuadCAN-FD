@@ -1,3 +1,5 @@
+## these are instructions for hardware version 1!
+
 ### install dependencies
 ```
 apt-get install raspberrypi-kernel-headers

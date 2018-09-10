@@ -1,5 +1,5 @@
 EESchema Schematic File Version 4
-LIBS:raspi3-4xMCP2517FD-cache
+LIBS:QuadCAN-FD-cache
 EELAYER 26 0
 EELAYER END
 $Descr A4 11693 8268

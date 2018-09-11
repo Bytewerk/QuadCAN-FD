@@ -34,12 +34,12 @@
             };
 
 	    spi1_pins: spi1_pins {
-		brcm,pins = <19 20 21>;
+		brcm,pins = <17 19 20 21>;
 		brcm,function = <3>; // alt 4
 	    };
 
 	    spi1_cs_pins: spi1_cs_pins {
-		brcm,pins = <17>; 
+		brcm,pins = <24>; 
 		brcm,function = <1>; // output
   	    };
 
@@ -95,17 +95,18 @@
             #size-cells = <0>;
             pinctrl-names = "default";
             pinctrl-0 = <&spi1_pins &spi1_cs_pins>;
-            cs-gpios = <&gpio 18 1>, <&gpio 17 1>;
+            cs-gpios = <&gpio 24 1>, <&gpio 17 1>;
             status = "okay";
 
-/*            can2: can@2 {
+            can2: can@2 {
 		compatible = "microchip,mcp2517fd";
 		reg = <0>;
                 clocks = <&mcp2517fd_osc>;
 		spi-max-frequency = <10000000>;
 		interrupt-parent = <&gpio>;
 		interrupts = <13 0x8>;
-            }; */
+            };
+
             can3: can@3 {
 		compatible = "microchip,mcp2517fd";
 		reg = <1>;

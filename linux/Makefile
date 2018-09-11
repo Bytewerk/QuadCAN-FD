@@ -1,1 +1,1 @@
-obj-m += mcp2517fd.o
+obj-m += mcp25xxfd.o
